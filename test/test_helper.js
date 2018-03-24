@@ -1,6 +1,16 @@
 const mongoose = require("mongoose");
 
-mongoose.connect("mongodb://localhost/users_test");
-mongoose.connection
-  .once("open", () => console.log("Good"))
-  .on("error", error => console.warn("error ", error));
+mongoose.Promise = global.Promise;
+
+before(done => {
+  mongoose.connect("mongodb://localhost/users_test");
+  mongoose.connection
+    .once("open", () => done())
+    .on("error", error => console.warn("error ", error));
+});
+
+beforeEach(done => {
+  mongoose.connection.collections.users.drop(() => {
+    done();
+  });
+});
