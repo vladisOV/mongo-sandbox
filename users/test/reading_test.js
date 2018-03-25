@@ -11,7 +11,13 @@ describe("Reading users from db", () => {
   });
   it("Finds all users with name Joe", done => {
     User.find({ name: "Joe" }).then(users => {
-      console.log(users);
+      assert(users[0]._id.toString() === joe._id.toString());
+      done();
+    });
+  });
+  it("Finds user with parcticular id", done => {
+    User.findOne({ _id: joe._id }).then(user => {
+      assert(user.name === "Joe");
       done();
     });
   });
