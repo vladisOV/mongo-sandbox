@@ -3,18 +3,36 @@ const User = require("../src/user");
 
 describe("Updating records", () => {
   let vasya;
-  beforeEach(done => {
+  beforeEach(async () => {
     vasya = new User({ name: "Vasya" });
-    vasya.save().then(() => {
-      done();
-    });
+    await vasya.save();
   });
+
+  async function assertName() {
+    const users = await User.find({});
+    assert(users.length === 1);
+    assert(users[0].name === "petya");
+  }
 
   it("model inst set & save", async () => {
     vasya.set("name", "petya");
     await vasya.save();
-    const users = await User.find({ name: "petya" });
-    assert(users.length === 1);
-    assert(users[0].name === "petya");
+    assertName();
+  });
+  it("inst update", async () => {
+    await vasya.update({ name: "alex" });
+    assertName();
+  });
+  it("model class update", async () => {
+    await User.update({ name: "petya" }, { name: "alex" });
+    assertName();
+  });
+  it("model class findOneAndUpdate", async () => {
+    await User.findOneAndUpdate({ name: "petya" }, { name: "alex" });
+    assertName();
+  });
+  it("model class update by Id", async () => {
+    await User.findByIdAndUpdate(vasya._id, { name: "alex" });
+    assertName();
   });
 });
