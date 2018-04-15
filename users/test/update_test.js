@@ -4,7 +4,7 @@ const User = require("../src/user");
 describe("Updating records", () => {
   let vasya;
   beforeEach(async () => {
-    vasya = new User({ name: "Vasya" });
+    vasya = new User({ name: "Vasya", postCount: 0 });
     await vasya.save();
   });
 
@@ -20,19 +20,24 @@ describe("Updating records", () => {
     assertName();
   });
   it("inst update", async () => {
-    await vasya.update({ name: "alex" });
+    await vasya.update({ name: "petya" });
     assertName();
   });
   it("model class update", async () => {
-    await User.update({ name: "petya" }, { name: "alex" });
+    await User.update({ name: "Vasya" }, { name: "petya" });
     assertName();
   });
   it("model class findOneAndUpdate", async () => {
-    await User.findOneAndUpdate({ name: "petya" }, { name: "alex" });
+    await User.findOneAndUpdate({ name: "Vasya" }, { name: "petya" });
     assertName();
   });
   it("model class update by Id", async () => {
-    await User.findByIdAndUpdate(vasya._id, { name: "alex" });
+    await User.findByIdAndUpdate(vasya._id, { name: "petya" });
     assertName();
+  });
+  it("user can increment postCount", async () => {
+    await User.update({ name: "Vasya" }, { $inc: { postCount: 1 } });
+    const user = await User.findOne({ name: "Vasya" });
+    assert(user.postCount === 1);
   });
 });
