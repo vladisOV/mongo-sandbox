@@ -23,4 +23,16 @@ describe("Subdocuments", () => {
     vasa = await User.findOne({ name: "Vasa" });
     assert(vasa.posts[0].title === "PostTitle");
   });
+  it("can remove an existing subdocument", async () => {
+    const vasa = new User({
+      name: "Vasa",
+      posts: [{ title: "new Title" }]
+    });
+    await vasa.save();
+    const user = await User.findOne({ name: "Vasa" });
+    user.posts[0].remove();
+    await user.save();
+    const userUpdated = await User.findOne({ name: "Vasa" });
+    assert(userUpdated.posts.length === 0);
+  });
 });

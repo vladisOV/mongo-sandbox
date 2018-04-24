@@ -36,8 +36,8 @@ describe("Updating records", () => {
     assertName();
   });
   it("user can increment postCount", async () => {
-    await User.update({ name: "Vasya" }, { $inc: { postCount: 1 } });
+    await User.update({ name: "Vasya" }, { $inc: { likes: 1 } });
     const user = await User.findOne({ name: "Vasya" });
-    assert(user.postCount === 1);
+    assert(user.likes === 1);
   });
 });
